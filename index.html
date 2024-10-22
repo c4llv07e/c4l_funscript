@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C4l funscript player</title>
+    <style>
+      * {
+          box-sizing: border-box;
+          max-height: 100%;
+      }
+      html, body {
+          background-color: black;
+          color: white;
+          height: 100%;
+          width: 100%;
+          margin: 0;
+          padding: 0;
+          max-height: 100%;
+          max-width: 100%;
+      }
+      .video_container {
+          flex: 1 1 auto;
+          display: flex;
+          justify-content: center;
+      }
+      video {
+          width: auto;
+          height: auto;
+          max-height: 80%; /* I GONNA RAPE FUCKING W3.ORG, IT'S INSANE! */
+      }
+    </style>
+  </head>
+  <body>
+    <script lang="javascript" src="https://cdn.jsdelivr.net/npm/buttplug@3.0.0/dist/web/buttplug.min.js"></script>
+    <div style="display: flex; flex-direction: column; height: 100%;">
+      <div>
+        <label for="intiface_address_input">Intiface address:</label>
+        <input name="intiface_address_input" autocomplete="on" id="intiface_address_input" type="text" placeholder="Intiface websocket address">
+      </div>
+      <div>
+        <button id="intiface_connect_button">Connect</button>
+        <button id="intiface_disconnect_button">Disconnect</button>
+        <button id="test_vibrate_button">Test vibrate</button>
+        <input type="range" id="vibration_rate_input" name="vibration_rate_input" min="0" max="100">
+        <label for="vibration_rate_input">Vibration rate</label>
+      </div>
+      <div>
+        <input type="file" id="video_upload" accept="video/*">
+        <input type="file" id="script_upload" accept=".funscript">
+      </div>
+      <div class="video_container">
+        <video id="fun_player" controls>
+          <p>Is it w3m or something? Why your browser doesn't support video playback?</p>
+        </video>
+      </div>
+    </div>
+    <script lang="javascript" src="main.js"></script>
+  </body>
+</html>
