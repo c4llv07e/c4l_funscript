@@ -1,8 +1,12 @@
+"use strict";
 let client = null;
 let devices = [];
+let device_latency = 0;
+let device_latencies
 let script;
 let current_ind = -1;
 let script_min_interval = 10;
+let last_power_value = 0;
 const main_connect = async () => {
   const address = intiface_address_input.value;
   let connector = new Buttplug
@@ -28,6 +32,7 @@ const main_disconnect = async () => {
     client.disconnect();
   };
   client = null;
+  devices = [];
 };
 
 const vibrate_all = async (value) => {
@@ -40,7 +45,7 @@ const vibrate_all = async (value) => {
       await device.vibrate(value);
     } catch (ex) {
       console.error(ex);
-      if (e instanceof Buttplug.ButtplugDeviceError) {
+      if (ex instanceof Buttplug.ButtplugDeviceError) {
         console.warn("Got device error!");
       };
     };
@@ -65,7 +70,7 @@ const update_current_ind = () => {
   if (script === null) {
     return;
   };
-  const at = fun_player.currentTime.toFixed(3) * 1000;
+  const at = fun_player.currentTime.toFixed(3) * 1000 + device_latency;
   current_ind = 0;
   while (script.actions[current_ind + 1].at <= at) {
     current_ind += 1;
@@ -105,7 +110,6 @@ video_upload.addEventListener("change", function() {
     const video_url = URL.createObjectURL(file);
     fun_player.src = video_url;
     fun_player.load();
-    fun_player.play();
   } else {
     console.error(`Expected video, got ${file.type}`);
   };
@@ -121,11 +125,12 @@ script_upload.addEventListener("change", function() {
     try {
       const script_text = event.target.result;
       script = JSON.parse(script_text);
-      update_interval();
-      update_current_ind();
     } catch (ex) {
       console.error(`Error at parsing funscript: ${ex}`);
+      return;
     };
+    update_interval();
+    update_current_ind();
   };
   reader.readAsText(file);
 });
@@ -134,7 +139,7 @@ const update_func = async () => {
   if (script == null || fun_player.paused) {
     return;
   };
-  const at = fun_player.currentTime.toFixed(3) * 1000;
+  const at = fun_player.currentTime.toFixed(3) * 1000 + device_latency;
   // console.log(at);
   while (script.actions.length > current_ind + 1 &&
          script.actions[current_ind + 1].at <= at) {
@@ -143,7 +148,19 @@ const update_func = async () => {
   if (current_ind === -1) {
     return;
   };
-  await vibrate_all(script.actions[current_ind].pos / 100 *
+  let power = 0;
+  if (difference_mode_input.checked) {
+    let value = (script.actions[current_ind].pos / 100);
+    power = value - last_power_value;
+    last_power_value = value;
+  } else {
+    power = script.actions[current_ind].pos / 100;
+    if (invert_mode_input.checked) {
+      power = 1.0 - power;
+    }
+  };
+  console.log(power);
+  await vibrate_all(Math.abs(power) *
     vibration_rate_input.value / 100);
 };
 
@@ -155,6 +172,17 @@ const update_func = async () => {
     await new Promise(r => setTimeout(r, script_min_interval));
   };
 })();
+
+setInterval(async () => {
+  if (devices.length == 0) {
+    return;
+  };
+  let device = devices[0];
+  let t0 = performance.now();
+  await device.battery();
+  let t1 = performance.now();
+  device_latency = (t1 - t0) / 2.0;
+}, 200);
 
 fun_player.addEventListener('play', update_current_ind);
 fun_player.addEventListener('seeked', update_current_ind);
