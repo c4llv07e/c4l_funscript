@@ -2,7 +2,7 @@
 let client = null;
 let devices = [];
 let device_latency = 0;
-let device_latencies
+let device_latencies;
 let script;
 let current_ind = -1;
 let script_min_interval = 10;
@@ -38,7 +38,7 @@ const main_disconnect = async () => {
 const vibrate_all = async (value) => {
   // console.log(`vibrating at ${value}`);
   for (const device of devices) {
-    if (device.vibrateAttributes.length == 0) {
+    if (device.vibrateAttributes.length === 0) {
       continue;
     };
     try {
@@ -159,7 +159,7 @@ const update_func = async () => {
       power = 1.0 - power;
     }
   };
-  console.log(power);
+  // console.log(power);
   await vibrate_all(Math.abs(power) *
     vibration_rate_input.value / 100);
 };
@@ -167,14 +167,12 @@ const update_func = async () => {
 (async () => {
   while (true) {
     await update_func();
-    // TODO(c4): find min delay between two actions and use it as a
-    // param here
     await new Promise(r => setTimeout(r, script_min_interval));
   };
 })();
 
 setInterval(async () => {
-  if (devices.length == 0) {
+  if (devices.length === 0) {
     return;
   };
   let device = devices[0];
