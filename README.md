@@ -16,3 +16,18 @@ contributions are welcome.
 - Difference mode
 
 - Inverted mode
+
+## Alternatives
+
+### Universal
+
+- [faptap.net](https://faptap.net/ ) (a lot of dead videos)
+- [Xtoys](https://xtoys.app/teases/-Mt5t36WStIVnlxrX_XM ) (untested)
+
+### Handy
+
+- [Funscript.io](https://funscript.io/ ) (beta [beta.funscript.io](https://beta.funscript.io/app/play ))
+
+### Buttplug.io
+
+- [Funscriptplayer](https://funscriptplayer.com/ )
